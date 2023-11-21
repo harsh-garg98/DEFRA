@@ -15,11 +15,15 @@ def handle_data():
         coordinates = Point(data['easting'], data['northing'])
         print('coordinates in easting northing of the postcode are:', coordinates)
 
-        is_inside = 'False'
+        is_inside = ['False','False','False']
         for index, polygon in gdf.iterrows():
             if shape(polygon['geometry']).contains(coordinates):
-                is_inside = 'True'
-                break
+                if polygon['type']=='np':
+                    is_inside[0] = 'True'
+                elif polygon['type']=='ramsar':
+                    is_inside[1] = 'True'
+                elif polygon['type']=='sssi':
+                    is_inside[2] = 'True'
         return is_inside
     except Exception as e:
         return e

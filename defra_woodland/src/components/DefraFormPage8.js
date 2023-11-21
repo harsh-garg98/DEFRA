@@ -1,22 +1,27 @@
 import { Button, DropdownButton, Dropdown, ButtonGroup } from "react-bootstrap";
 import { Form } from "react-bootstrap";
-import ButtonsBottom from "./ButtonsBottom";
 import ButtonsBottomThree from "./ButtonsBottomThree";
 import { useState } from "react";
 import axios from "axios";
 
 const DefraFormPage8 = ({ nextPage, previousPage }) => {
   const [postcode, setPostcode] = useState("");
+  const [gridReference, setGridReference] = useState("");
   const [easting, setEasting] = useState(null);
   const [northing, setNorthing] = useState(null);
-  const [pointLocation, setPointLocation] = useState(null);
+  const [pointLocation, setPointLocation] = useState(['', '', '']);
 
-  const handleChange = (event) => {
+  const handleChangePostcode = (event) => {
     setPostcode(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleChangeGridReference = (event) => {
+    setGridReference(event.target.value);
+  };
+
+  const handleSubmitPostcode = (event) => {
     event.preventDefault();
+    console.log(postcode);
     axios
       .get(`http://api.getthedata.com/postcode/${postcode}`)
       .then((response) => {
@@ -42,6 +47,71 @@ const DefraFormPage8 = ({ nextPage, previousPage }) => {
       });
   };
 
+  function gridRefToEastingNorthing(gridRef) {
+    // Check if the input is valid
+    if (typeof gridRef !== "string" || gridRef.length < 4 || gridRef.length % 2 !== 0) {
+      window.alert("Invalid grid reference number");
+    }
+
+    // Split the grid reference into two parts: letters and numbers
+    var letters = gridRef.slice(0, 2).toUpperCase();
+    var numbers = gridRef.slice(2);
+
+    // Check if the letters are valid
+    if (!/^[A-HJ-Z]{2}$/.test(letters)) {
+      window.alert("Invalid grid reference letters");
+    }
+
+    // Convert the letters to a 100km square index
+    var letter1 = letters.charCodeAt(0) - 65;
+    var letter2 = letters.charCodeAt(1) - 65;
+
+    // Adjust for skipped I
+    if (letter1 > 7) letter1--;
+    if (letter2 > 7) letter2--;
+
+    // Calculate the 100km square easting and northing
+    var easting100km = ((letter1 % 5) * 5 + (letter2 % 5)) * 100000;
+    var northing100km = (19 - Math.floor(letter1 / 5) * 5 - Math.floor(letter2 / 5)) * 100000;
+
+    // Split the numbers into two parts: eastings and northings
+    var halfLength = numbers.length / 2;
+    var eastings = numbers.slice(0, halfLength);
+    var northings = numbers.slice(halfLength);
+
+    // Pad the numbers with zeros to 5 digits
+    eastings = eastings.padEnd(5, "0");
+    northings = northings.padEnd(5, "0");
+
+    // Convert the numbers to integers
+    eastings = parseInt(eastings, 10);
+    northings = parseInt(northings, 10);
+
+    // Add the numbers to the 100km square easting and northing
+    var eastingValue = easting100km + eastings;
+    var northingValue = northing100km + northings;
+
+    setEasting(eastingValue);
+    setNorthing(northingValue);
+
+    // Return the result as an object
+    return { easting: eastingValue, northing: northingValue };
+  }
+
+  const handleSubmitGridReference = (event) => {
+    event.preventDefault();
+    const coordinates = gridRefToEastingNorthing(gridReference)
+    axios.post("http://127.0.0.1:5000/api/data", coordinates)
+      .then((postResponse) => {
+        // Handle the response from the POST request if needed
+        console.log("POST Response:", postResponse.data);
+        setPointLocation(postResponse.data);
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  };
+
   return (
     <div>
       <h2>
@@ -55,40 +125,46 @@ const DefraFormPage8 = ({ nextPage, previousPage }) => {
           </a>
         </div>
 
-        <div>
+        <div className="button-container">
           <Form.Group className="mb-3 form-blocks" controlId="postcode">
             <Form.Label>Enter your land's post code</Form.Label>
             <Form.Control
               type="name"
               placeholder="Enter post code"
-              onChange={handleChange}
+              onChange={handleChangePostcode}
             />
           </Form.Group>
 
-          <Button variant="secondary" onClick={handleSubmit}>
+          <Button variant="secondary" onClick={handleSubmitPostcode}>
+            Submit
+          </Button>
+        </div>
+
+        <h4>OR</h4>
+
+        <div className="button-container">
+          <Form.Group className="mb-3 form-blocks" controlId="grid_reference">
+            <Form.Label>Enter your land's Grid reference number</Form.Label>
+            <Form.Control
+              type="name"
+              placeholder="Enter Grid reference number"
+              onChange={handleChangeGridReference}
+            />
+          </Form.Group>
+
+          <Button variant="secondary" onClick={handleSubmitGridReference}>
             Submit
           </Button>
 
           <p>The easting is: {easting}</p>
           <p>The northing is: {northing}</p>
-          <p>This piece of land is inside a protected habitat</p>
-          <p>{pointLocation}</p>
+          <p>This piece of land is inside a National Park</p>
+          <p>{pointLocation[0]}</p>
+          <p>This piece of land is inside a Ramsar site</p>
+          <p>{pointLocation[1]}</p>
+          <p>This piece of land is inside a Site of Special Scientific Interest</p>
+          <p>{pointLocation[2]}</p>
         </div>
-
-        {/* <Form.Group className="mb-3 form-blocks">
-      <Form.Label>What is your Woodland Creation Objective? (Please answer keeping in mind a 10 year timescale)</Form.Label>
-      <Form.Control type="name" placeholder="Enter details" />
-    </Form.Group>
-
-    <Form.Group className="mb-3 form-blocks">
-      <Form.Label>What are the threats (if any) to meeting the above objectives?</Form.Label>
-      <Form.Control type="name" placeholder="Enter details" />
-    </Form.Group>
-
-    <Form.Group className="mb-3 form-blocks">
-      <Form.Label>What measures will be undertaken to mitigate the above threats?</Form.Label>
-      <Form.Control type="name" placeholder="Enter details" />
-    </Form.Group> */}
 
         <ButtonsBottomThree nextPage={nextPage} previousPage={previousPage} />
       </Form>
