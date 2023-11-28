@@ -1,6 +1,5 @@
 #!/usr/bin/bash
 
-
 echo 'Entered the function'
 git add --all -- ':!data'
 echo 'Git add done'
