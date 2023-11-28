@@ -15,28 +15,28 @@ import DefraFormPage8 from "./DefraFormPage8";
 
 const FormComponent = () => {
 
-    const [currentPage, setCurrentPage] = useState(0)
+    // const [currentPage, setCurrentPage] = useState(0)
 
-    useEffect(() => {
-        const savedPage = JSON.parse(localStorage.getItem('page'))
-        if(savedPage){
-            setCurrentPage(savedPage)
-        }
-    }, [])
+    // useEffect(() => {
+    //     const savedPage = JSON.parse(localStorage.getItem('page'))
+    //     if(savedPage){
+    //         setCurrentPage(savedPage)
+    //     }
+    // }, [])
 
-    const navigateNextPage = (event) => {
-        event.preventDefault()
-        const changedPage = currentPage + 1
-        setCurrentPage(changedPage)
-        localStorage.setItem('page', changedPage)
-    }
+    // const navigateNextPage = (event) => {
+    //     event.preventDefault()
+    //     const changedPage = currentPage + 1
+    //     setCurrentPage(changedPage)
+    //     localStorage.setItem('page', changedPage)
+    // }
 
-    const navigatePreviousPage = (event) => {
-        event.preventDefault()
-        const changedPage = currentPage - 1
-        setCurrentPage(changedPage)
-        localStorage.setItem('page', changedPage)
-    }
+    // const navigatePreviousPage = (event) => {
+    //     event.preventDefault()
+    //     const changedPage = currentPage - 1
+    //     setCurrentPage(changedPage)
+    //     localStorage.setItem('page', changedPage)
+    // }
 
     // const pages = [<DefraFormLogin nextPage={navigateNextPage}/>,
     //                 <DefraFormRegister nextPage={navigateNextPage}/>,

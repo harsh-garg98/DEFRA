@@ -4,12 +4,14 @@ import ButtonsBottomThree from "./ButtonsBottomThree";
 import { useState } from "react";
 import axios from "axios";
 
-const DefraFormPage8 = ({ nextPage, previousPage }) => {
+const DefraFormPage8 = ({ 
+  nextPage, 
+  previousPage }) => {
   const [postcode, setPostcode] = useState("");
   const [gridReference, setGridReference] = useState("");
   const [easting, setEasting] = useState(null);
   const [northing, setNorthing] = useState(null);
-  const [pointLocation, setPointLocation] = useState(['', '', '']);
+  const [pointLocation, setPointLocation] = useState(['Information needed', 'Information needed', 'Information needed']);
 
   const handleChangePostcode = (event) => {
     setPostcode(event.target.value);
@@ -39,6 +41,7 @@ const DefraFormPage8 = ({ nextPage, previousPage }) => {
       })
       .then((postResponse) => {
         // Handle the response from the POST request if needed
+        console.log(`The easting and northing coordinates: (${easting}, ${northing})`);
         console.log("POST Response:", postResponse.data);
         setPointLocation(postResponse.data);
       })
@@ -104,6 +107,7 @@ const DefraFormPage8 = ({ nextPage, previousPage }) => {
     axios.post("http://127.0.0.1:5000/api/data", coordinates)
       .then((postResponse) => {
         // Handle the response from the POST request if needed
+        console.log(`The easting and northing coordinates: (${easting}, ${northing})`);
         console.log("POST Response:", postResponse.data);
         setPointLocation(postResponse.data);
       })
@@ -125,7 +129,7 @@ const DefraFormPage8 = ({ nextPage, previousPage }) => {
           </a>
         </div>
 
-        <div className="button-container">
+        <div style={{'marginBottom':'10px'}}>
           <Form.Group className="mb-3 form-blocks" controlId="postcode">
             <Form.Label>Enter your land's post code</Form.Label>
             <Form.Control
@@ -142,7 +146,7 @@ const DefraFormPage8 = ({ nextPage, previousPage }) => {
 
         <h4>OR</h4>
 
-        <div className="button-container">
+        <div style={{'marginBottom':'10px'}}>
           <Form.Group className="mb-3 form-blocks" controlId="grid_reference">
             <Form.Label>Enter your land's Grid reference number</Form.Label>
             <Form.Control
@@ -155,15 +159,15 @@ const DefraFormPage8 = ({ nextPage, previousPage }) => {
           <Button variant="secondary" onClick={handleSubmitGridReference}>
             Submit
           </Button>
+        </div>
 
-          <p>The easting is: {easting}</p>
-          <p>The northing is: {northing}</p>
-          <p>This piece of land is inside a National Park</p>
-          <p>{pointLocation[0]}</p>
-          <p>This piece of land is inside a Ramsar site</p>
-          <p>{pointLocation[1]}</p>
-          <p>This piece of land is inside a Site of Special Scientific Interest</p>
-          <p>{pointLocation[2]}</p>
+        <div>
+          <p><b>This piece of land is inside a National Park:</b> {pointLocation[0]}</p>
+          
+          <p><b>This piece of land is inside a Ramsar site:</b> {pointLocation[1]}</p>
+          
+          <p><b>This piece of land is inside a Site of Special Scientific Interest:</b> {pointLocation[2]}</p>
+          
         </div>
 
         <ButtonsBottomThree nextPage={nextPage} previousPage={previousPage} />

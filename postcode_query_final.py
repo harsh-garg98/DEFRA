@@ -3,6 +3,7 @@ from flask_cors import CORS
 from data_preprocessing import gdf
 from shapely.geometry import Point, shape
 import geopandas as gpd
+import time
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
@@ -10,6 +11,9 @@ CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 @app.route('/api/data', methods=['POST'])
 def handle_data():
     try:
+        start = time.time()
+        print('Querying')
+
         data = request.get_json()
         print('received data from user:', data)
         coordinates = Point(data['easting'], data['northing'])
@@ -24,6 +28,8 @@ def handle_data():
                     is_inside[1] = 'True'
                 elif polygon['type']=='sssi':
                     is_inside[2] = 'True'
+
+        print('Query finished in ', time.time() - start)
         return is_inside
     except Exception as e:
         return e

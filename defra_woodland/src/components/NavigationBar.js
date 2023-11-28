@@ -10,16 +10,16 @@ const NavigationBar = () => {
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="justify-content-end ml-auto container-fluid nav-links">
                     <Nav.Link href="#home">Home</Nav.Link>
-                    <Nav.Link href="#link">Link</Nav.Link>
-                    <NavDropdown title="Dropdown" id="basic-nav-dropdown" className="nav-links">
-                        <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+                    <Nav.Link href="#link">Profile</Nav.Link>
+                    <NavDropdown title="Options" id="basic-nav-dropdown" className="nav-links">
+                        <NavDropdown.Item href="#action/3.1">Switch user</NavDropdown.Item>
                         <NavDropdown.Item href="#action/3.2">
-                            Another action
+                            Logout
                         </NavDropdown.Item>
-                        <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                        <NavDropdown.Item href="#action/3.3">Report issue</NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item href="#action/3.4">
-                            Separated link
+                            Docs
                         </NavDropdown.Item>
                     </NavDropdown>
                 </Nav>
