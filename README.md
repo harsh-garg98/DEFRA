@@ -11,5 +11,5 @@ https://naturalengland-defra.opendata.arcgis.com/search?collection=Dataset
 
 <h3>Shell Script</h3>
 
-The shell script 'lazygit' is used to push changes to the git repository in one line instead of 3. It should be invoked as follows:
+The shell script 'lazygit' is used to push changes to the git repository in one line instead of 3. Since the data folder is bigger than the allowed 50MB, the script ignores the folder and pushes everything else. It should be invoked as follows:
 ```bash lazygit.sh "insert some message"```
